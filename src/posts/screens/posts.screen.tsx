@@ -2,7 +2,7 @@ import { Image, StyleSheet, Platform, View, Text } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View>
+    <View style={{ backgroundColor: "#f1f5f9", flex: 1 }}>
       <Text>home page</Text>
     </View>
   );

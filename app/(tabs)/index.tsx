@@ -1,3 +1,3 @@
-import HomeScreen from "@/src/posts/screens/posts.screen";
+import HomeScreen from "@app/posts/screens/posts.screen";
 
 export default HomeScreen;
