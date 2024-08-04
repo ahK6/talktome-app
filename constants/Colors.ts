@@ -4,4 +4,5 @@ export const Colors = {
   white: "white",
   background: "#f1f5f9",
   primary: "rgba(70, 130, 180, 1)",
+  gray: "rgba(211, 211, 211, 1)",
 };
