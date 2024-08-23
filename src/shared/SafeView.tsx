@@ -10,7 +10,7 @@ const SafeView = ({ children }: { children: React.ReactNode }) => {
     <>
       <SafeAreaView
         style={{
-          backgroundColor: Colors.background,
+          backgroundColor: "rgba(237,238,243,255)",
           flex: 1,
           paddingTop: insets.top,
         }}
