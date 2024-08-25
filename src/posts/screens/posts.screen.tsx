@@ -1,6 +1,8 @@
+//TODO: VER PORQUE LA PAGINACION DE REQUESTING AUMENTA CUANDO PAGINO HELPING
+
 import SimpleHeader from "@/src/shared/components/headers/SimpleHeader";
 import SafeView from "@/src/shared/SafeView";
-import { IPostList, IPost } from "../types/posts.types";
+import { IPostList, IPost, ITypes } from "../types/posts.types";
 import {
   FlatList,
   ScrollView,
@@ -11,104 +13,23 @@ import {
 import { Colors } from "@/constants/Colors";
 import dayjs from "dayjs";
 import { Tabs } from "react-native-collapsible-tab-view";
+import { useGetPostsQuery } from "../services/posts.services";
+import { useEffect, useState } from "react";
 
 export default function HomeScreen() {
-  const fakeData: IPostList = {
-    data: [
-      {
-        _id: "666f5f7f456a23258554270a",
-        title: "Titulo pueba",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        keywords: ["test"],
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-06-16T21:56:15.543Z"),
-        updatedAt: new Date("2024-06-16T21:56:15.543Z"),
-        comments: [],
-        type: "helping",
-        id: "666f5f7f456a23258554270a",
-      },
-      {
-        _id: "66a5e059ed599cc01fa81540",
-        title: "Titulo pueba",
-        content: "Contenido prueba",
-        keywords: ["test"],
-        type: "requesting",
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-07-28T06:08:25.206Z"),
-        updatedAt: new Date("2024-07-28T06:08:25.206Z"),
-        id: "66a5e059ed599cc01fa81540",
-      },
-      {
-        _id: "666f5f7f456a23258554270a",
-        title: "Titulo pueba",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        keywords: ["test"],
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-06-16T21:56:15.543Z"),
-        updatedAt: new Date("2024-06-16T21:56:15.543Z"),
-        comments: [],
-        id: "666f5f7f456a23258554270a",
-        type: "helping",
-      },
-      {
-        _id: "666f5f7f456a23258554270a",
-        title: "Titulo pueba",
-        content: "Contenido prueba",
-        keywords: ["test"],
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-06-16T21:56:15.543Z"),
-        updatedAt: new Date("2024-06-16T21:56:15.543Z"),
-        comments: [{}, {}, {}],
-        id: "666f5f7f456a23258554270a",
-        type: "requesting",
-      },
-      {
-        _id: "666f5f7f456a23258554270a",
-        title: "Titulo pueba",
-        content: "Contenido prueba",
-        keywords: ["test"],
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-06-16T21:56:15.543Z"),
-        updatedAt: new Date("2024-06-16T21:56:15.543Z"),
-        comments: [{}],
-        id: "666f5f7f456a23258554270a",
-        type: "helping",
-      },
-      {
-        _id: "666f5f7f456a23258554270a",
-        title: "Titulo pueba",
-        content: "Contenido prueba",
-        keywords: ["test"],
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-06-16T21:56:15.543Z"),
-        updatedAt: new Date("2024-06-16T21:56:15.543Z"),
-        comments: [{}, {}],
-        id: "666f5f7f456a23258554270a",
-        type: "requesting",
-      },
-      {
-        _id: "666f5f7f456a23258554270a",
-        title: "Titulo pueba",
-        content: "Contenido prueba",
-        keywords: ["test"],
-        status: "open",
-        idUserCreator: "662c7bf4f46acf1803bc033c",
-        createdAt: new Date("2024-06-16T21:56:15.543Z"),
-        updatedAt: new Date("2024-06-16T21:56:15.543Z"),
-        comments: [{}, {}, {}, {}, {}, {}, {}],
-        id: "666f5f7f456a23258554270a",
-        type: "helping",
-      },
-    ],
-  };
+  const [type, setType] = useState<ITypes>("requesting");
+  const [pageRequesting, setPageRequesting] = useState<number>(1);
+  const [pageHelping, setPageHelping] = useState<number>(1);
+
+  const { data, error, isLoading } = useGetPostsQuery({
+    page: type === "requesting" ? pageRequesting : pageHelping,
+    pageSize: 4,
+    type: type,
+  });
+
+  useEffect(() => {
+    // console.log("wefwef " + JSON.stringify(data));
+  }, [data]);
 
   const PostItem = ({ item, index }: { item: IPost; index: number }) => {
     return (
@@ -150,7 +71,7 @@ export default function HomeScreen() {
               numberOfLines={1}
               style={{ color: Colors.white, fontWeight: "bold", width: "60%" }}
             >
-              {item.title} qew qw eqw eqw eqw eqw eqw eqw eqw eqw e
+              {item.title}
             </Text>
             <Text style={{ color: Colors.white }}>
               {dayjs(item?.createdAt).format("D/MM/YY")}
@@ -189,24 +110,55 @@ export default function HomeScreen() {
     );
   };
 
-  const Header = () => <SimpleHeader title="Publicaciones" />;
-
   return (
     <SafeView>
       <SimpleHeader title="Publicaciones" />
-      <Tabs.Container>
+      <Tabs.Container
+        onIndexChange={(index: number) => {
+          console.log("indexxx " + typeof index);
+          if (index === 0) {
+            setType("requesting");
+          } else if (index === 1) {
+            setType("helping");
+          }
+        }}
+      >
         <Tabs.Tab name="Apoyo" label="Apoyo">
           <FlatList
-            data={fakeData.data}
+            data={data?.data ?? []}
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
+            onEndReached={({ distanceFromEnd }) => {
+              if (distanceFromEnd >= 0 && !isLoading) {
+                console.log("total pages " + data?.totalPages);
+                console.log("current pageRequesting " + pageRequesting);
+
+                console.log("current pageHelping " + pageHelping);
+
+                if (pageRequesting < (data?.totalPages ?? 1)) {
+                  setPageRequesting(pageRequesting + 1);
+                }
+              }
+            }}
           />
         </Tabs.Tab>
         <Tabs.Tab name="Superacion" label="Superacion">
           <FlatList
-            data={fakeData.data}
+            data={data?.data}
             renderItem={PostItem}
-            contentContainerStyle={{ paddingTop: 70 }}
+            contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
+            onEndReached={({ distanceFromEnd }) => {
+              if (distanceFromEnd >= 0 && !isLoading) {
+                console.log("total pages " + data?.totalPages);
+                console.log("current pageRequesting " + pageRequesting);
+
+                console.log("current pageHelping " + pageHelping);
+
+                if (pageHelping < (data?.totalPages ?? 1)) {
+                  setPageHelping(pageHelping + 1);
+                }
+              }
+            }}
           />
         </Tabs.Tab>
       </Tabs.Container>

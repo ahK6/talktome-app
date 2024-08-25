@@ -15,3 +15,16 @@ export interface IPost {
   id: string;
   type?: string;
 }
+
+export interface IPostList {
+  data: IPost[];
+  totalPages: number;
+}
+
+export type ITypes = "requesting" | "helping";
+
+export interface IPostParams {
+  page: number;
+  pageSize: number;
+  type: ITypes;
+}
