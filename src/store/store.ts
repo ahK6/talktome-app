@@ -3,9 +3,12 @@
 import { configureStore, Reducer } from "@reduxjs/toolkit";
 import { persistStore, persistReducer, PersistConfig } from "redux-persist";
 import { asyncErrorMiddleware } from "../middlewares";
+import postsReducer from "../posts/store/posts.store";
 
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    postLists: postsReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

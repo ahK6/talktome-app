@@ -1,18 +1,49 @@
 //TODO: VER PORQUE LA PAGINACION DE REQUESTING AUMENTA CUANDO PAGINO HELPING
-import React from "react";
+import React, { useEffect } from "react";
 import SimpleHeader from "@/src/shared/components/headers/SimpleHeader";
 import SafeView from "@/src/shared/SafeView";
-import { IPost, ITypes } from "../types/posts.types";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import dayjs from "dayjs";
 import { Tabs } from "react-native-collapsible-tab-view";
 import { useState } from "react";
+import { PostTypes } from "../types/enum.types";
+import { useAppDispatch, useAppSelector } from "@/src/shared/hooks/reduxHooks";
+import { IPost } from "../types/posts";
+import { getPostsByType } from "../services/post.actions";
+import { useDispatch } from "react-redux";
 
 export default function HomeScreen() {
-  const [type, setType] = useState<ITypes>("requesting");
+  const [type, setType] = useState<PostTypes>(PostTypes.requesting);
   const [pageRequesting, setPageRequesting] = useState<number>(1);
   const [pageHelping, setPageHelping] = useState<number>(1);
+
+  const dispatch = useAppDispatch();
+
+  const { postsLists } = useAppSelector((state) => state.postLists);
+
+  const getPost = (type: PostTypes) => {
+    dispatch(
+      getPostsByType({
+        inputParams: {
+          page: type === PostTypes.requesting ? pageRequesting : pageHelping,
+          pageSize: 10,
+          type,
+        },
+        shouldStoreOutputState: true,
+      })
+    );
+  };
+
+  useEffect(() => {
+    getPost(PostTypes.helping);
+    getPost(PostTypes.requesting);
+  }, []);
+
+  useEffect(() => {
+    console.log("wefwefwff " + JSON.stringify(postsLists));
+    console.log("lenght " + postsLists.requesting?.length);
+  }, [postsLists]);
 
   const PostItem = ({ item, index }: { item: IPost; index: number }) => {
     return (
@@ -100,15 +131,15 @@ export default function HomeScreen() {
         onIndexChange={(index: number) => {
           console.log("indexxx " + typeof index);
           if (index === 0) {
-            setType("requesting");
+            setType(PostTypes.requesting);
           } else if (index === 1) {
-            setType("helping");
+            setType(PostTypes.helping);
           }
         }}
       >
         <Tabs.Tab name="Apoyo" label="Apoyo">
           <FlatList
-            data={[]}
+            data={postsLists[PostTypes.requesting]}
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
             onEndReached={({ distanceFromEnd }) => {
@@ -132,7 +163,7 @@ export default function HomeScreen() {
         </Tabs.Tab>
         <Tabs.Tab name="Superacion" label="Superacion">
           <FlatList
-            data={[]}
+            data={postsLists[PostTypes.helping]}
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
             onEndReached={({ distanceFromEnd }) => {

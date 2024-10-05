@@ -7,12 +7,10 @@ import axios, {
 export const anonAxiosApi = axios.create({
   timeout: 20000,
   timeoutErrorMessage: "ERROR_TIMEOUT_ANONAPI",
-  transformResponse: [],
 });
 export const privateAxiosApi = axios.create({
   timeout: 20000,
   timeoutErrorMessage: "ERROR_TIMEOUT_PRIVATENAPI",
-  transformResponse: [],
 });
 
 axios.defaults.headers.common["Content-Type"] = "application/json";
