@@ -11,19 +11,22 @@ import { PostTypes } from "../types/enum.types";
 import { useAppDispatch, useAppSelector } from "@/src/shared/hooks/reduxHooks";
 import { IPost } from "../types/posts";
 import { getPostsByType } from "../services/post.actions";
-import { useDispatch } from "react-redux";
+import { AsyncActionStatus } from "@/src/shared/types/enums.types";
 
 export default function HomeScreen() {
   const [type, setType] = useState<PostTypes>(PostTypes.requesting);
   const [pageRequesting, setPageRequesting] = useState<number>(1);
   const [pageHelping, setPageHelping] = useState<number>(1);
+  const [stopPaginating, setStopPaginating] = useState<PostTypes[]>([]);
 
   const dispatch = useAppDispatch();
 
-  const { postsLists } = useAppSelector((state) => state.postLists);
+  const { postsLists, postsListStatus } = useAppSelector(
+    (state) => state.postLists
+  );
 
-  const getPost = (type: PostTypes) => {
-    dispatch(
+  const getPost = async (type: PostTypes) => {
+    const info: IPost[] = await dispatch(
       getPostsByType({
         inputParams: {
           page: type === PostTypes.requesting ? pageRequesting : pageHelping,
@@ -32,7 +35,16 @@ export default function HomeScreen() {
         },
         shouldStoreOutputState: true,
       })
-    );
+    ).unwrap();
+
+    if (info.length === 0) {
+      if (!stopPaginating.includes(type)) {
+        const currentStopped = [...stopPaginating];
+        currentStopped.push(type);
+
+        setStopPaginating(currentStopped);
+      }
+    }
   };
 
   useEffect(() => {
@@ -41,9 +53,16 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    console.log("wefwefwff " + JSON.stringify(postsLists));
-    console.log("lenght " + postsLists.requesting?.length);
-  }, [postsLists]);
+    if (pageRequesting > 1) {
+      getPost(PostTypes.requesting);
+    }
+  }, [pageRequesting]);
+
+  useEffect(() => {
+    if (pageHelping > 1) {
+      getPost(PostTypes.helping);
+    }
+  }, [pageHelping]);
 
   const PostItem = ({ item, index }: { item: IPost; index: number }) => {
     return (
@@ -143,21 +162,19 @@ export default function HomeScreen() {
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
             onEndReached={({ distanceFromEnd }) => {
-              /*  if (distanceFromEnd >= 0 && !isLoading) {
-                console.log("total pages " + data?.totalPages);
-                console.log("current pageRequesting " + pageRequesting);
-
-                console.log("current pageHelping " + pageHelping);
-
-                console.log("current type 111 " + type);
-
+              if (
+                distanceFromEnd >= 0 &&
+                postsListStatus !== AsyncActionStatus.loading
+              ) {
                 if (
-                  pageRequesting < (data?.totalPages ?? 1) &&
+                  !stopPaginating.includes(PostTypes.requesting) &&
                   type === "requesting"
                 ) {
+                  console.log("current page " + pageRequesting);
+
                   setPageRequesting(pageRequesting + 1);
                 }
-              } */
+              }
             }}
           />
         </Tabs.Tab>
@@ -167,21 +184,19 @@ export default function HomeScreen() {
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
             onEndReached={({ distanceFromEnd }) => {
-              /*  if (distanceFromEnd >= 0 && !isLoading) {
-                console.log("total pages " + data?.totalPages);
-                console.log("current pageRequesting " + pageRequesting);
-
-                console.log("current pageHelping " + pageHelping);
-
-                console.log("current type 22222 " + type);
-
+              if (
+                distanceFromEnd >= 0 &&
+                postsListStatus !== AsyncActionStatus.loading
+              ) {
                 if (
-                  pageHelping < (data?.totalPages ?? 1) &&
+                  !stopPaginating.includes(PostTypes.helping) &&
                   type === "helping"
                 ) {
+                  console.log("current page " + pageHelping);
+
                   setPageHelping(pageHelping + 1);
                 }
-              } */
+              }
             }}
           />
         </Tabs.Tab>
