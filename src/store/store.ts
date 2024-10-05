@@ -1,19 +1,33 @@
-import { configureStore } from "@reduxjs/toolkit";
-// Or from '@reduxjs/toolkit/query/react'
-import { setupListeners } from "@reduxjs/toolkit/query";
-import { postsApi } from "../posts/services/posts.services";
+// store.ts
 
-export const store = configureStore({
-  reducer: {
-    // Add the generated reducer as a specific top-level slice
-    [postsApi.reducerPath]: postsApi.reducer,
-  },
-  // Adding the api middleware enables caching, invalidation, polling,
-  // and other useful features of `rtk-query`.
+import { configureStore, Reducer } from "@reduxjs/toolkit";
+import { persistStore, persistReducer, PersistConfig } from "redux-persist";
+import { asyncErrorMiddleware } from "../middlewares";
+
+const store = configureStore({
+  reducer: {},
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(postsApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }).concat(asyncErrorMiddleware),
+  /* enhancers: (defaultEnhancers) => {
+    if (__DEV__) {
+      const { default: Reactotron } = require("@/src/utils/reactotron");
+      return [...defaultEnhancers, Reactotron.createEnhancer()];
+    }
+    return defaultEnhancers;
+  }, */
 });
 
-// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
-// see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
-setupListeners(store.dispatch);
+const persistor = persistStore(store);
+
+// persistor.pause();
+// persistor.flush().then(() => {
+//   return persistor.purge();
+// });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export { store, persistor };

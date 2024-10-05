@@ -1,35 +1,18 @@
 //TODO: VER PORQUE LA PAGINACION DE REQUESTING AUMENTA CUANDO PAGINO HELPING
-
+import React from "react";
 import SimpleHeader from "@/src/shared/components/headers/SimpleHeader";
 import SafeView from "@/src/shared/SafeView";
-import { IPostList, IPost, ITypes } from "../types/posts.types";
-import {
-  FlatList,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { IPost, ITypes } from "../types/posts.types";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 import dayjs from "dayjs";
 import { Tabs } from "react-native-collapsible-tab-view";
-import { useGetPostsQuery } from "../services/posts.services";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function HomeScreen() {
   const [type, setType] = useState<ITypes>("requesting");
   const [pageRequesting, setPageRequesting] = useState<number>(1);
   const [pageHelping, setPageHelping] = useState<number>(1);
-
-  const { data, error, isLoading } = useGetPostsQuery({
-    page: type === "requesting" ? pageRequesting : pageHelping,
-    pageSize: 4,
-    type: type,
-  });
-
-  useEffect(() => {
-    // console.log("wefwef " + JSON.stringify(data));
-  }, [data]);
 
   const PostItem = ({ item, index }: { item: IPost; index: number }) => {
     return (
@@ -125,39 +108,49 @@ export default function HomeScreen() {
       >
         <Tabs.Tab name="Apoyo" label="Apoyo">
           <FlatList
-            data={data?.data ?? []}
+            data={[]}
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
             onEndReached={({ distanceFromEnd }) => {
-              if (distanceFromEnd >= 0 && !isLoading) {
+              /*  if (distanceFromEnd >= 0 && !isLoading) {
                 console.log("total pages " + data?.totalPages);
                 console.log("current pageRequesting " + pageRequesting);
 
                 console.log("current pageHelping " + pageHelping);
 
-                if (pageRequesting < (data?.totalPages ?? 1)) {
+                console.log("current type 111 " + type);
+
+                if (
+                  pageRequesting < (data?.totalPages ?? 1) &&
+                  type === "requesting"
+                ) {
                   setPageRequesting(pageRequesting + 1);
                 }
-              }
+              } */
             }}
           />
         </Tabs.Tab>
         <Tabs.Tab name="Superacion" label="Superacion">
           <FlatList
-            data={data?.data}
+            data={[]}
             renderItem={PostItem}
             contentContainerStyle={{ paddingTop: 70, paddingHorizontal: 10 }}
             onEndReached={({ distanceFromEnd }) => {
-              if (distanceFromEnd >= 0 && !isLoading) {
+              /*  if (distanceFromEnd >= 0 && !isLoading) {
                 console.log("total pages " + data?.totalPages);
                 console.log("current pageRequesting " + pageRequesting);
 
                 console.log("current pageHelping " + pageHelping);
 
-                if (pageHelping < (data?.totalPages ?? 1)) {
+                console.log("current type 22222 " + type);
+
+                if (
+                  pageHelping < (data?.totalPages ?? 1) &&
+                  type === "helping"
+                ) {
                   setPageHelping(pageHelping + 1);
                 }
-              }
+              } */
             }}
           />
         </Tabs.Tab>
