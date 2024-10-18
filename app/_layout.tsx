@@ -33,6 +33,11 @@ export default function RootLayout() {
     <Provider store={store}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="onBoarding/login"
+          options={{ headerShown: false }}
+        />
+
         <Stack.Screen name="+not-found" />
       </Stack>
     </Provider>

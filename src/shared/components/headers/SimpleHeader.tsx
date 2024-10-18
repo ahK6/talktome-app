@@ -1,5 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { IoniIcon } from "@/src/shared/components/icons/TabBarIcon";
+import { router } from "expo-router";
 import React, { useCallback } from "react";
 import {
   StyleSheet,
@@ -16,6 +17,7 @@ type props = {
   title: string;
   onBackButtonPress?: () => void;
   showBackButton?: boolean;
+  rightButtonStyle?: ViewStyle;
 };
 
 const SimpleHeader = ({
@@ -25,6 +27,7 @@ const SimpleHeader = ({
   textStyle,
   onBackButtonPress,
   showBackButton = true,
+  rightButtonStyle,
 }: props) => {
   const onBackPress = useCallback(() => {}, []);
 
@@ -43,7 +46,7 @@ const SimpleHeader = ({
       {/*  {props.buttonType == "back" && ( */}
       {showBackButton && (
         <TouchableOpacity
-          style={[buttonStyle, styles.button]}
+          style={[styles.leftButton, buttonStyle]}
           onPress={onPropsBackButtonPress}
           activeOpacity={0.8}
         >
@@ -53,6 +56,17 @@ const SimpleHeader = ({
       {/*           )}
        */}
       <Text style={[textStyle, styles.title]}>{title}</Text>
+
+      {}
+      <TouchableOpacity
+        style={[styles.rightButton, rightButtonStyle]}
+        onPress={() => {
+          router.navigate("/onBoarding/login");
+        }}
+        activeOpacity={0.8}
+      >
+        <IoniIcon name="log-in-outline" color={"white"} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -70,9 +84,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
   },
-  button: {
+  leftButton: {
     position: "absolute",
     left: 25,
+  },
+  rightButton: {
+    position: "absolute",
+    right: 25,
   },
 });
 
