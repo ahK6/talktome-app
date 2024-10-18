@@ -8,10 +8,11 @@ export const login = createAsyncThunkWithErrorHandling(
   async ({
     inputParams: { phoneNumber, password },
   }: IActionInputType<ILoginInput>) => {
-    const { data } = await anonAxiosApi.post(`${apiUrl}/users/login`, {
-      phoneNumber,
-      password,
-    });
+    const params = new URLSearchParams();
+    params.append("phoneNumber", phoneNumber);
+    params.append("password", password);
+
+    const { data } = await anonAxiosApi.post(`${apiUrl}/users/login`, params);
 
     return data.data;
   }

@@ -69,7 +69,7 @@ const StandardInput = ({
         keyboardType={keyboardType ? keyboardType : "default"}
         cursorColor={Colors.primary}
         selectionColor={Colors.primary}
-        placeholderTextColor={Colors.primary}
+        placeholderTextColor={Colors.textSecundary}
         style={[
           inputStyle,
           {
@@ -84,7 +84,7 @@ const StandardInput = ({
             paddingLeft: 15,
             paddingRight: 15,
             height: !multiline ? 45 : 65,
-            color: Colors.primary,
+            color: Colors.text,
           },
         ]}
         onBlur={onBlur}
