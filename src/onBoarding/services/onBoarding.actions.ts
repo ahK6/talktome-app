@@ -14,6 +14,6 @@ export const login = createAsyncThunkWithErrorHandling(
 
     const { data } = await anonAxiosApi.post(`${apiUrl}/users/login`, params);
 
-    return data.data;
+    return data;
   }
 );
