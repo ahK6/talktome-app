@@ -70,7 +70,7 @@ const SimpleHeader = ({
           }}
           activeOpacity={0.8}
         >
-          <IoniIcon name="person-circle-sharp" color={"white"} size={35} />
+          <IoniIcon name="person-circle-sharp" color={"white"} size={30} />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
