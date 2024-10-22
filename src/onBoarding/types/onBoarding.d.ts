@@ -20,3 +20,10 @@ interface ILoginInput {
   phoneNumber: string;
   password: string;
 }
+
+interface ICreateAccountInput {
+  email: string;
+  nickName: string;
+  phoneNumber: string;
+  password: string;
+}

@@ -104,7 +104,12 @@ const SecureInput = ({
           onSubmitEditing={onSubmitEditing}
         />
         <TouchableOpacity
-          style={{ position: "absolute", right: 20 }}
+          style={{
+            position: "absolute",
+            right: 20,
+            alignItems: "center",
+            paddingTop: 20,
+          }}
           onPress={onPressIcon}
         >
           <IoniIcon

@@ -34,6 +34,10 @@ export default function RootLayout() {
             name="onBoarding/login"
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="onBoarding/createAccount"
+            options={{ headerShown: false }}
+          />
 
           <Stack.Screen name="+not-found" />
         </Stack>

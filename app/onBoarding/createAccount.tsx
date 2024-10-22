@@ -1,11 +1,5 @@
-import {
-  useForm,
-  Controller,
-  SubmitHandler,
-  ControllerFieldState,
-} from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Colors } from "@/constants/Colors";
 import MainButton from "@/src/shared/components/buttons/Button";
 import SimpleHeader from "@/src/shared/components/headers/SimpleHeader";
 import SecureInput from "@/src/shared/components/inputs/SecureInput";
@@ -13,44 +7,45 @@ import StandardInput from "@/src/shared/components/inputs/StandarInput";
 import SafeView from "@/src/shared/SafeView";
 import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { loginValidation } from "@/src/onBoarding/utils/onBoarding.validators";
-import { ILoginInput } from "@/src/onBoarding/types/onBoarding";
+import { signUpValidation } from "@/src/onBoarding/utils/onBoarding.validators";
+import { ICreateAccountInput } from "@/src/onBoarding/types/onBoarding";
 import { useAppDispatch } from "@/src/shared/hooks/reduxHooks";
-import { login } from "@/src/onBoarding/services/onBoarding.actions";
+import { createAccount } from "@/src/onBoarding/services/onBoarding.actions";
 import { showToast } from "@/src/shared/utils/alerts/ToastAlert";
 import { router } from "expo-router";
 
-const Login = () => {
+const CreateAccount = () => {
   const dispatch = useAppDispatch();
 
   const { control, handleSubmit } = useForm({
-    resolver: yupResolver(loginValidation),
+    resolver: yupResolver(signUpValidation),
   });
 
   const [loading, setLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<any> = async (fData: ILoginInput) => {
+  const onSubmit: SubmitHandler<any> = async (fData: ICreateAccountInput) => {
     if (loading) return;
     setLoading(true);
     try {
       await dispatch(
-        login({
+        createAccount({
           inputParams: {
+            email: fData.email,
+            nickName: fData.nickName,
             phoneNumber: fData.phoneNumber,
             password: fData.password,
           },
         })
       ).unwrap();
 
-      showToast("Sesión iniciada");
+      showToast("Cuenta creada, un email de confirmacion ha sido enviado");
 
       router.navigate("(tabs)");
     } catch (error: any) {
-      if (error?.response?.status === 401) {
-        showToast("Credenciales invalidas", { type: "danger" });
-      }
-      if (error?.response?.status === 202) {
-        showToast("Usuario pendiente de confirmar cuenta", { type: "danger" });
+      if (error.response.status === 409) {
+        showToast("Email o numero de telefono ya registrados", {
+          type: "danger",
+        });
       }
       setLoading(false);
 
@@ -60,7 +55,7 @@ const Login = () => {
 
   return (
     <SafeView>
-      <SimpleHeader title="Iniciar sesion" />
+      <SimpleHeader title="Crear cuenta" />
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 10,
@@ -77,7 +72,7 @@ const Login = () => {
             fontSize: 20,
           }}
         >
-          Inicia sesion para poder publicar o responder a otros
+          Registrate para poder publicar o responder a otros
         </Text>
         <View
           style={{
@@ -86,6 +81,33 @@ const Login = () => {
             backgroundColor: "white",
           }}
         >
+          <Controller
+            name="email"
+            control={control}
+            render={({ field, fieldState }) => (
+              <StandardInput
+                label="Correo electronico"
+                placeHolder="Introduce tu email"
+                value={field.value?.toString()}
+                onChangeText={(text) => field.onChange(text)}
+                error={fieldState?.error?.message}
+              />
+            )}
+          />
+          <Controller
+            name="nickName"
+            control={control}
+            render={({ field, fieldState }) => (
+              <StandardInput
+                label="Usuario"
+                placeHolder="Como quieres que te llamemos?"
+                value={field.value?.toString()}
+                onChangeText={(text) => field.onChange(text)}
+                error={fieldState?.error?.message}
+                containerStyle={{ marginTop: 10 }}
+              />
+            )}
+          />
           <Controller
             name="phoneNumber"
             control={control}
@@ -96,6 +118,7 @@ const Login = () => {
                 value={field.value?.toString()}
                 onChangeText={(text) => field.onChange(text)}
                 error={fieldState?.error?.message}
+                containerStyle={{ marginTop: 10 }}
               />
             )}
           />
@@ -110,25 +133,28 @@ const Login = () => {
                 value={field.value?.toString()}
                 onChangeText={(text) => field.onChange(text)}
                 error={fieldState?.error?.message}
-                containerStyle={{ marginTop: 20 }}
+                containerStyle={{ marginTop: 10 }}
               />
             )}
           />
 
-          <Text style={{ fontWeight: "bold", marginTop: 10 }}>
-            Aun no tienes cuenta?{" "}
-            <Text
-              style={{ color: Colors.primary, textDecorationLine: "underline" }}
-              onPress={() => {
-                router.navigate("onBoarding/createAccount");
-              }}
-            >
-              Registrate
-            </Text>
-          </Text>
+          <Controller
+            name="confirmPassword"
+            control={control}
+            render={({ field, fieldState }) => (
+              <SecureInput
+                label="Confirmar contraseña"
+                placeHolder="Confirma tu contraseña"
+                value={field.value?.toString()}
+                onChangeText={(text) => field.onChange(text)}
+                error={fieldState?.error?.message}
+                containerStyle={{ marginTop: 10 }}
+              />
+            )}
+          />
         </View>
         <MainButton
-          label="Entrar"
+          label="Registrarme"
           containerStyle={{ marginTop: 20, width: "90%", alignSelf: "center" }}
           onPress={handleSubmit(onSubmit)}
           isLoading={loading}
@@ -138,4 +164,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default CreateAccount;
