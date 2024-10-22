@@ -44,7 +44,7 @@ const Login = () => {
 
       showToast("Sesión iniciada");
 
-      router.navigate("(tabs)");
+      router.navigate("/(tabs)");
     } catch (error: any) {
       if (error?.response?.status === 401) {
         showToast("Credenciales invalidas", { type: "danger" });
@@ -120,7 +120,7 @@ const Login = () => {
             <Text
               style={{ color: Colors.primary, textDecorationLine: "underline" }}
               onPress={() => {
-                router.navigate("onBoarding/createAccount");
+                router.navigate("/onBoarding/createAccount");
               }}
             >
               Registrate

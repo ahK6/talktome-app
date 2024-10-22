@@ -145,7 +145,7 @@ export default function HomeScreen() {
 
   return (
     <SafeView>
-      <SimpleHeader title="Publicaciones" />
+      <SimpleHeader title="Publicaciones" showBackButton={false} />
       <Tabs.Container
         onIndexChange={(index: number) => {
           console.log("indexxx " + typeof index);

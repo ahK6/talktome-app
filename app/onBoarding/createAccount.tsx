@@ -40,7 +40,7 @@ const CreateAccount = () => {
 
       showToast("Cuenta creada, un email de confirmacion ha sido enviado");
 
-      router.navigate("(tabs)");
+      router.navigate("/(tabs)");
     } catch (error: any) {
       if (error.response.status === 409) {
         showToast("Email o numero de telefono ya registrados", {

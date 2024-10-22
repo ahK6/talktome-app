@@ -9,6 +9,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 type props = {
   containerStyle?: ViewStyle;
@@ -29,7 +30,11 @@ const SimpleHeader = ({
   showBackButton = true,
   rightButtonStyle,
 }: props) => {
-  const onBackPress = useCallback(() => {}, []);
+  const onBackPress = useCallback(() => {
+    router.back();
+  }, []);
+
+  const { loginInfo } = useAppSelector((state) => state.onBoarding);
 
   const onPropsBackButtonPress = useCallback(() => {
     requestAnimationFrame(() => {
@@ -57,16 +62,27 @@ const SimpleHeader = ({
        */}
       <Text style={[textStyle, styles.title]}>{title}</Text>
 
-      {}
-      <TouchableOpacity
-        style={[styles.rightButton, rightButtonStyle]}
-        onPress={() => {
-          router.navigate("/onBoarding/login");
-        }}
-        activeOpacity={0.8}
-      >
-        <IoniIcon name="log-in-outline" color={"white"} />
-      </TouchableOpacity>
+      {loginInfo?.token ? (
+        <TouchableOpacity
+          style={[styles.rightButton, rightButtonStyle]}
+          onPress={() => {
+            router.navigate("/account/myProfile");
+          }}
+          activeOpacity={0.8}
+        >
+          <IoniIcon name="person-circle-sharp" color={"white"} size={35} />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={[styles.rightButton, rightButtonStyle]}
+          onPress={() => {
+            router.navigate("/onBoarding/login");
+          }}
+          activeOpacity={0.8}
+        >
+          <IoniIcon name="log-in-outline" color={"white"} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
